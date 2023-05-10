@@ -1,40 +1,35 @@
-## Using This Template
+# Smart Wallet demo script
 
-Create a project using this example:
+This simple node script demonstrates how to use thirdweb to deploy and use Smart Wallets - ERC4337 smart contracts - using the Wallet SDK.
 
-```bash
-npx thirdweb create --template node-typescript-starter
-```
+The script will:
 
-Install dependencies:
+1. generate a personal wallet using LocalWallet
+2. connect to the corresponding smart wallet
+3. claim a ERC20 token using the thirdweb SDK
 
-```bash
-npm install # npm
-yarn # yarn
-```
-
-- Export your wallet private key from your wallet and add it to the .env file.
-
-```env
-PRIVATE_KEY=your_private_key
-```
-
-- Run the project:
+## Install dependencies
 
 ```bash
-npm run dev # npm
-yarn dev # yarn
+yarn install
 ```
 
-## Learn More
+## Configuration
 
-To learn more about thirdweb and Next.js, take a look at the following resources:
+The script requires a thirdweb API key.
 
-- [thirdweb TypeScript Documentation](https://docs.thirdweb.com/typescript) - learn about our JavaScript/TypeScript SDK.
-- [thirdweb Portal](https://docs.thirdweb.com) - check our guides and development resources.
+paste your api key in your .env file:
 
-You can check out [the thirdweb GitHub organization](https://github.com/thirdweb-dev) - your feedback and contributions are welcome!
+```.env
+THIRDWEB_API_KEY={{your_api_key}}
+```
 
-## Join our Discord!
+## Run the project:
 
-For any questions, suggestions, join our discord at [https://discord.gg/thirdweb](https://discord.gg/thirdweb).
+```bash
+yarn dev
+```
+
+## Documentation
+
+Full documentation at: [https://portal.thirdweb.com/wallet/smart-wallet](https://portal.thirdweb.com/wallet/smart-wallet)

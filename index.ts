@@ -1,51 +1,83 @@
 import { config } from "dotenv";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
 import { readFileSync } from "fs";
+import { Goerli } from "@thirdweb-dev/chains";
+import { LocalWalletNode } from "@thirdweb-dev/wallets/evm/wallets/local-wallet-node";
+import {
+  SmartWallet,
+  SmartWalletConfig,
+  getAllSmartWallets,
+  isSmartWalletDeployed,
+} from "@thirdweb-dev/wallets";
 
 config();
 
+const chain = Goerli;
+const factoryAddress = "0xaB15553D83b47cac2DDfD8D4753D740e69930834";
+const thirdwebApiKey = process.env.THIRDWEB_API_KEY as string;
+
 const main = async () => {
-  if (!process.env.PRIVATE_KEY) {
-    throw new Error("No private key found");
-  }
-  try {
-    const sdk = ThirdwebSDK.fromPrivateKey(
-      process.env.PRIVATE_KEY as string,
-      "goerli"
+  if (!thirdwebApiKey) {
+    throw new Error(
+      "No API Key found, get one from https://thirdweb.com/dashboard"
     );
-
-    const contractAddress = await sdk.deployer.deployNFTDrop({
-      name: "My Drop",
-      primary_sale_recipient: "0x39Ab29fAfb5ad19e96CFB1E1c492083492DB89d4",
-    });
-
-    console.log("Contract address: ", contractAddress);
-
-    const contract = await sdk.getContract(contractAddress, "nft-drop");
-
-    const metadatas = [
-      {
-        name: "Blue Star",
-        description: "A blue star NFT",
-        image: readFileSync("assets/blue-star.png"),
-      },
-      {
-        name: "Red Star",
-        description: "A red star NFT",
-        image: readFileSync("assets/red-star.png"),
-      },
-      {
-        name: "Yellow Star",
-        description: "A yellow star NFT",
-        image: readFileSync("assets/yellow-star.png"),
-      },
-    ];
-
-    await contract.createBatch(metadatas);
-    console.log("Created batch successfully!");
-  } catch (e) {
-    console.error("Something went wrong: ", e);
   }
+  console.log("Running on", chain.slug, "with factory", factoryAddress);
+
+  // Load or create personal wallet
+  // here we generate LocalWallet that will be stored in wallet.json
+  const personalWallet = new LocalWalletNode();
+  await personalWallet.loadOrCreate({
+    strategy: "mnemonic",
+    encryption: false,
+  });
+  const personalWalletAddress = await personalWallet.getAddress();
+  console.log("Personal wallet address:", personalWalletAddress);
+
+  // Configure the smart wallet
+  const config: SmartWalletConfig = {
+    chain,
+    factoryAddress,
+    thirdwebApiKey,
+    gasless: true,
+  };
+
+  // [Optional] get all the smart wallets associated with the personal wallet
+  const accounts = await getAllSmartWallets(
+    chain,
+    factoryAddress,
+    personalWalletAddress
+  );
+  console.log(`Associated smart wallets for personal wallet`, accounts);
+
+  // [Optional] check if the smart wallet is deployed for the personal wallet
+  const isWalletDeployed = await isSmartWalletDeployed(
+    chain,
+    factoryAddress,
+    personalWalletAddress
+  );
+  console.log(`Is smart wallet deployed?`, isWalletDeployed);
+
+  // Connect the smart wallet
+  const smartWallet = new SmartWallet(config);
+  await smartWallet.connect({
+    personalWallet,
+  });
+
+  // now use the SDK normally to perform transactions with the smart wallet
+  const sdk = await ThirdwebSDK.fromWallet(smartWallet, chain);
+
+  console.log("Smart Account addr:", await sdk.wallet.getAddress());
+  console.log("balance:", (await sdk.wallet.balance()).displayValue);
+
+  // Claim a ERC20 token
+  const contract = await sdk.getContract(
+    "0xc54414e0E2DBE7E9565B75EFdC495c7eD12D3823" // TokenDrop on goerli
+  );
+  const tokenBalance = await contract.erc20.balance();
+  console.log("ERC20 token balance:", tokenBalance.displayValue);
+  const tx = await contract.erc20.claim(1);
+  console.log("Claimed 1 ERC20 token, tx hash:", tx.receipt.transactionHash);
 };
 
 main();
