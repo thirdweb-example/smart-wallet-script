@@ -57,6 +57,12 @@ const main = async () => {
     personalWalletAddress
   );
   console.log(`Is smart wallet deployed?`, isWalletDeployed);
+  
+  // [Optional] Deploy the smart wallet
+  if (!isWalletDeployed) {
+    await smartWallet.deploy();
+    console.log(`Smart wallet deployed!`);
+  }
 
   // Connect the smart wallet
   const smartWallet = new SmartWallet(config);
