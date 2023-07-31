@@ -13,11 +13,11 @@ import {
 config();
 
 const chain = Goerli;
-const factoryAddress = "0xaB15553D83b47cac2DDfD8D4753D740e69930834";
-const thirdwebApiKey = process.env.THIRDWEB_API_KEY as string;
+const factoryAddress = "0x3c115305ecC8119D9517BB67a5B3D4073Bc9CffF";
+const secretKey = process.env.THIRDWEB_SECRET_KEY as string;
 
 const main = async () => {
-  if (!thirdwebApiKey) {
+  if (!secretKey) {
     throw new Error(
       "No API Key found, get one from https://thirdweb.com/dashboard"
     );
@@ -28,8 +28,8 @@ const main = async () => {
   // here we generate LocalWallet that will be stored in wallet.json
   const personalWallet = new LocalWalletNode();
   await personalWallet.loadOrCreate({
-    strategy: "mnemonic",
-    encryption: false,
+    strategy: "encryptedJson",
+    password: "password",
   });
   const personalWalletAddress = await personalWallet.getAddress();
   console.log("Personal wallet address:", personalWalletAddress);
@@ -38,25 +38,25 @@ const main = async () => {
   const config: SmartWalletConfig = {
     chain,
     factoryAddress,
-    thirdwebApiKey,
+    secretKey,
     gasless: true,
   };
 
-  // [Optional] get all the smart wallets associated with the personal wallet
-  const accounts = await getAllSmartWallets(
-    chain,
-    factoryAddress,
-    personalWalletAddress
-  );
-  console.log(`Associated smart wallets for personal wallet`, accounts);
+  // // [Optional] get all the smart wallets associated with the personal wallet
+  // const accounts = await getAllSmartWallets(
+  //   chain,
+  //   factoryAddress,
+  //   personalWalletAddress
+  // );
+  // console.log(`Associated smart wallets for personal wallet`, accounts);
 
-  // [Optional] check if the smart wallet is deployed for the personal wallet
-  const isWalletDeployed = await isSmartWalletDeployed(
-    chain,
-    factoryAddress,
-    personalWalletAddress
-  );
-  console.log(`Is smart wallet deployed?`, isWalletDeployed);
+  // // [Optional] check if the smart wallet is deployed for the personal wallet
+  // const isWalletDeployed = await isSmartWalletDeployed(
+  //   chain,
+  //   factoryAddress,
+  //   personalWalletAddress
+  // );
+  // console.log(`Is smart wallet deployed?`, isWalletDeployed);
 
   // Connect the smart wallet
   const smartWallet = new SmartWallet(config);
@@ -65,7 +65,9 @@ const main = async () => {
   });
 
   // now use the SDK normally to perform transactions with the smart wallet
-  const sdk = await ThirdwebSDK.fromWallet(smartWallet, chain);
+  const sdk = await ThirdwebSDK.fromWallet(smartWallet, chain, {
+    secretKey: secretKey,
+  });
 
   console.log("Smart Account addr:", await sdk.wallet.getAddress());
   console.log("balance:", (await sdk.wallet.balance()).displayValue);

@@ -10,9 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@thirdweb-dev/chains": "^0.1.14",
-    "@thirdweb-dev/sdk": "^3",
-    "@thirdweb-dev/wallets": "^0.2.18",
+    "@thirdweb-dev/chains": "^0.1.40",
+    "@thirdweb-dev/sdk": "^3.10.42",
+    "@thirdweb-dev/wallets": "^1.1.5",
     "dotenv": "^16.0.3",
     "ethers": "^5"
   },
