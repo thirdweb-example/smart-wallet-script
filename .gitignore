@@ -4,4 +4,3 @@ node_modules
 wallet.json
 .env
 .env.local
-yarn.lock
