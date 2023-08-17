@@ -42,22 +42,6 @@ const main = async () => {
     gasless: true,
   };
 
-  // // [Optional] get all the smart wallets associated with the personal wallet
-  // const accounts = await getAllSmartWallets(
-  //   chain,
-  //   factoryAddress,
-  //   personalWalletAddress
-  // );
-  // console.log(`Associated smart wallets for personal wallet`, accounts);
-
-  // // [Optional] check if the smart wallet is deployed for the personal wallet
-  // const isWalletDeployed = await isSmartWalletDeployed(
-  //   chain,
-  //   factoryAddress,
-  //   personalWalletAddress
-  // );
-  // console.log(`Is smart wallet deployed?`, isWalletDeployed);
-
   // Connect the smart wallet
   const smartWallet = new SmartWallet(config);
   await smartWallet.connect({
