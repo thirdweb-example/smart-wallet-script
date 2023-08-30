@@ -21,7 +21,7 @@ The script requires a thirdweb API key.
 paste your api key in your .env file:
 
 ```.env
-THIRDWEB_API_KEY={{your_api_key}}
+THIRDWEB_SECRET_KEY={{your_api_key}}
 ```
 
 ## Run the project:
