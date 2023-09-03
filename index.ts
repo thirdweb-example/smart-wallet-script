@@ -1,14 +1,8 @@
 import { config } from "dotenv";
 import { ThirdwebSDK } from "@thirdweb-dev/sdk";
-import { readFileSync } from "fs";
 import { Goerli } from "@thirdweb-dev/chains";
 import { LocalWalletNode } from "@thirdweb-dev/wallets/evm/wallets/local-wallet-node";
-import {
-  SmartWallet,
-  SmartWalletConfig,
-  getAllSmartWallets,
-  isSmartWalletDeployed,
-} from "@thirdweb-dev/wallets";
+import { SmartWallet, SmartWalletConfig } from "@thirdweb-dev/wallets";
 
 config();
 
