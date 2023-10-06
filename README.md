@@ -7,6 +7,9 @@ The script will:
 1. generate a personal wallet using LocalWallet
 2. connect to the corresponding smart wallet
 3. claim a ERC20 token using the thirdweb SDK
+4. create a scoped session key
+5. claim a ERC20 using the session key
+6. revoke the session key
 
 ## Install dependencies
 
@@ -18,10 +21,10 @@ yarn install
 
 The script requires a thirdweb API key.
 
-paste your api key in your .env file:
+paste your thirdweb API secret key in your .env file:
 
 ```.env
-THIRDWEB_SECRET_KEY={{your_api_key}}
+THIRDWEB_SECRET_KEY={{your_secret_key}}
 ```
 
 ## Run the project:
